@@ -6,16 +6,26 @@ srcDir=$1;
 destDir=$2;
 bitness=256;
 
-cnt=$(ls -1q $srcDir | wc -l);
+cnt=$(($(ls -1q $srcDir | wc -l)));
 
 mkdir -m 770 $destDir;
+
 i=0;
 
 find $srcDir -type f | 
-while read line
+while read srcFile
 do
-    baseName=$(basename $line);
-    lame --quiet -b $bitness $line "$destDir/$baseName"
+
+    baseName=$(basename $srcFile);
+
+    destFile="$destDir/$baseName";
+
+    if [ ! -f $destFile ];
+    then;
+
+        lame --quiet -b $bitness $srcFile $destFile;
+
+    fi;
 
     echo -n -e "\r$((i++))/$cnt";
 

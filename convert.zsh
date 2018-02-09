@@ -6,11 +6,27 @@ srcDir=$1;
 destDir=$2;
 bitness=256;
 
+mkdir -p -m 770 $destDir;
+
 cnt=$(($(ls -1q $srcDir | wc -l)));
 
-mkdir -m 770 $destDir;
+echo 'Searching differences...'
 
-i=0;
+(( cnt = 0 ));
+for file in $(ls -1 $destDir)
+do
+
+    if [ ! -f "./$srcDir/$file" ];
+    then;
+        (( cnt++ ))
+        rm "./$destDir/$file";
+    fi;
+
+done;
+
+echo "$cnt files deleted"
+
+(( i = 0 ));
 
 find $srcDir -type f | 
 while read srcFile
@@ -20,13 +36,13 @@ do
 
     destFile="$destDir/$baseName";
 
+    echo -n -e "\r$((++i))/$cnt";
+
     if [ ! -f $destFile ];
     then;
 
         lame --quiet -b $bitness $srcFile $destFile;
 
     fi;
-
-    echo -n -e "\r$((i++))/$cnt";
 
 done;

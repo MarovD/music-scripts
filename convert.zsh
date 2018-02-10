@@ -8,8 +8,6 @@ bitness=256;
 
 mkdir -p -m 770 $destDir;
 
-cnt=$(($(ls -1q $srcDir | wc -l)));
-
 echo 'Searching differences...'
 
 (( cnt = 0 ));
@@ -25,6 +23,8 @@ do
 done;
 
 echo "$cnt files deleted"
+
+cnt=$(($(ls -1q $srcDir | wc -l)));
 
 (( i = 0 ));
 

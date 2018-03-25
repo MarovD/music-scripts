@@ -1,10 +1,10 @@
-#!/usr/local/bin/zsh
-#./convert.zsh /media/disk/Collection /media/disk/Collection\ \[256kbps\]
+#!/usr/bin/zsh
+#./convert.zsh 256 /media/disk/Collection /media/disk/Collection\ \[256kbps\]
 IFS=$'\n' 
 
-srcDir=$1;
-destDir=$2;
-bitness=256;
+bitness=$1;
+srcDir=$2;
+destDir=$3;
 
 mkdir -p -m 770 $destDir;
 
@@ -14,10 +14,10 @@ echo 'Searching differences...'
 for file in $(ls -1 $destDir)
 do
 
-    if [ ! -f "./$srcDir/$file" ];
+    if [ ! -f "$srcDir/$file" ];
     then;
         (( cnt++ ))
-        rm "./$destDir/$file";
+        rm "$destDir/$file";
     fi;
 
 done;

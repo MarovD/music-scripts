@@ -1,4 +1,4 @@
-#!/usr/local/bin/zsh
+#!/usr/bin/zsh
 #./move.zsh src It\ Will\ Destroy\ You
 IFS=$'\n' 
 

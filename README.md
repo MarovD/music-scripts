@@ -14,6 +14,10 @@ yarn install
 ./index.js --help
 ```
 
+## dependencies
+
+lame
+
 ## possibilities
 
 - move mp3 files according to described rules using id3 tags

@@ -8,9 +8,9 @@ const {spawnSync} = require('child_process');
 const os = require('os');
 const ProgressBar = require('progress');
 
-exports.command = `convert <srcdir> <dstdir> <bitness>`;
+exports.command = `mp3bit <srcdir> <dstdir> <bitness>`;
 
-exports.describe = `convert bitness`;
+exports.describe = `create mp3 files changing bitness`;
 
 exports.builder = function (yargs) {
 
@@ -31,7 +31,7 @@ exports.builder = function (yargs) {
         choices: [8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 192, 224, 256, 320],
 
     })
-    .example(`$0 convert ./Music/Seven ./Files192kbps/Seven 192`);
+    .example(`$0 mp3bit ./Music/Seven ./Files192kbps/Seven 192`);
 
 }
 

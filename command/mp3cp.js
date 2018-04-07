@@ -6,9 +6,9 @@ const NodeId3 = require('node-id3');
 const ProgressBar = require('progress');
 const fse = require('fs-extra');
 
-exports.command = `mp3move <srcdir> <dstdir> [rule]`;
+exports.command = `mp3cp <srcdir> <dstdir> [rule]`;
 
-exports.describe = `copy and rename`;
+exports.describe = `copy all mp3 files recursively and rename`;
 
 exports.builder =  function (yargs) {
 
@@ -29,7 +29,7 @@ exports.builder =  function (yargs) {
         type: `string`,
 
     })
-        .example(`$0 mp3move ./Music/Seven ./Collection`);
+        .example(`$0 mp3cp ./Music/Seven ./Collection`);
 
 }
 

@@ -1,8 +1,9 @@
 'use strict';
 
 const path = require('path');
-const {spawnSync} = require('child_process');
+const {spawn, spawnSync} = require('child_process');
 const NodeId3 = require('node-id3');
+const ProgressBar = require('progress');
 
 exports.command = `mp3move <srcdir> <dstdir> [rule]`;
 
@@ -27,40 +28,43 @@ exports.builder =  function (yargs) {
         type: `string`,
 
     })
-        .example(`$0 move ./Music/Seven ./Collection`,
-        `: Copy files recursive from ./Music/Seven to ./Collection base`);
+        .example(`$0 mp3move ./Music/Seven ./Collection`);
 
 }
 
-exports.handler = function(args) {
+exports.handler = async args => {
 
     let srcDir = path.resolve(args['srcdir']);
     let dstDir = path.resolve(args['dstdir']);
     let rule = args['rule'];
 
-    let find = spawnSync(`find`, [srcDir, '-type', 'f']);
+    let find = spawnSync(`find`, [srcDir, '-type', 'f', '-name', '*.mp3']);
 
     let data = find.stdout.toString().split('\n').slice(0, -1);
+
+    let cnt = data.length;
+
+    let progressBar = new ProgressBar('progress: :current/:total; time remaining: :eta s',
+        {total: cnt,}
+    );
 
     for(let file of data) {
 
         file = path.resolve(file);
         let type = path.extname(file);
 
-        if(['.mp3'].includes(type)) {
+        let tags = NodeId3.read(file);
 
-            let tags = NodeId3.read(file);
+        let name = rule;
+        name = name.replace('%A', tags['artist'])
+            .replace('%a', tags['album'])
+            .replace('%t', tags['title']);
+        name = `${name}${type}`;
 
-            let name = rule;
-            name = name.replace(/%A/, tags['artist'])
-                .replace(/%a/, tags['album'])
-                .replace(/%t/, tags['title']);
-            name = `${name}${type}`;
-
-            console.log(name);
-            spawnSync('cp', [file, path.resolve(dstDir, name)]);
-
-        }
+        // idk wtf
+        await new Promise((res, rej) => {setTimeout(_ => {res();}, 0);});
+        progressBar.tick();
+        await spawn('cp', [file, path.resolve(dstDir, name)]);
 
     }
 

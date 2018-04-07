@@ -6,6 +6,7 @@ const fse = require('fs-extra');
 const path = require('path');
 const {spawnSync} = require('child_process');
 const os = require('os');
+const ProgressBar = require('progress');
 
 exports.command = `convert <srcdir> <dstdir> <bitness>`;
 
@@ -30,12 +31,11 @@ exports.builder = function (yargs) {
         choices: [8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 192, 224, 256, 320],
 
     })
-    .example(`$0 convert ./Music/Seven ./Files192kbps/Seven 192`,
-        `: Copy and convert files from ./Music/Seven to ./Files192kbps/Seven`);
+    .example(`$0 convert ./Music/Seven ./Files192kbps/Seven 192`);
 
 }
 
-exports.handler = async (args) => {
+exports.handler = async args => {
 
     let srcDir = path.resolve(args['srcdir']);
     let dstDir = path.resolve(args['dstdir']);
@@ -47,7 +47,10 @@ exports.handler = async (args) => {
     let data = find.stdout.toString().split('\n').slice(0, -1);
 
     let cnt = data.length;
-    let i = 0;
+
+    let progressBar = new ProgressBar('progress: :current/:total; time remaining: :eta s',
+        {total: cnt,}
+    );
 
     for(let file of data) {
 
@@ -63,7 +66,9 @@ exports.handler = async (args) => {
             bitrate: bitness,
         }).setFile(fullSrcPath);
 
-        await encoder.encode().then( _ => {++i; console.log(`\r${i}/${cnt}`)});
+        await encoder.encode();
+
+        progressBar.tick();
 
     }
 

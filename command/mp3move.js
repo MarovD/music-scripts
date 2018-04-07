@@ -4,6 +4,7 @@ const path = require('path');
 const {spawn, spawnSync} = require('child_process');
 const NodeId3 = require('node-id3');
 const ProgressBar = require('progress');
+const fse = require('fs-extra');
 
 exports.command = `mp3move <srcdir> <dstdir> [rule]`;
 
@@ -36,6 +37,9 @@ exports.handler = async args => {
 
     let srcDir = path.resolve(args['srcdir']);
     let dstDir = path.resolve(args['dstdir']);
+
+    fse.ensureDir(dstDir);
+
     let rule = args['rule'];
 
     let find = spawnSync(`find`, [srcDir, '-type', 'f', '-name', '*.mp3']);
@@ -64,7 +68,8 @@ exports.handler = async args => {
         // idk wtf
         await new Promise((res, rej) => {setTimeout(_ => {res();}, 0);});
         progressBar.tick();
-        await spawn('cp', [file, path.resolve(dstDir, name)]);
+        let newFilePath = path.resolve(dstDir, name);
+        await spawn('cp', [file, newFilePath]);
 
     }
 

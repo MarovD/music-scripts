@@ -59,14 +59,18 @@ exports.handler = async args => {
 
         let fullDstPath = path.resolve(dstDir, relative);
 
-        fse.ensureDir(path.dirname(fullDstPath));
+        if(!fs.existsSync(fullDstPath)) {
 
-        const encoder = new Lame({
-            output: fullDstPath,
-            bitrate: bitness,
-        }).setFile(fullSrcPath);
+            fse.ensureDir(path.dirname(fullDstPath));
 
-        await encoder.encode();
+            const encoder = new Lame({
+                output: fullDstPath,
+                bitrate: bitness,
+            }).setFile(fullSrcPath);
+
+            await encoder.encode();
+
+        }
 
         progressBar.tick();
 

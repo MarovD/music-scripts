@@ -8,5 +8,6 @@ let args = yargs
     .recommendCommands()
     .wrap(null)
     .config()
+    .strict(true)
     .version(`1.0.0`)
     .parse();

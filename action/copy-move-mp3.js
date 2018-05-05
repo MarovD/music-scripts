@@ -4,6 +4,7 @@ const path = require('path');
 const {spawn, spawnSync} = require('child_process');
 const NodeId3 = require('node-id3');
 const ProgressBar = require('progress');
+const fs = require('fs');
 const fse = require('fs-extra');
 
 module.exports = async (srcDir, dstDir, rule) => {
@@ -31,12 +32,21 @@ module.exports = async (srcDir, dstDir, rule) => {
         name = name.replace('%A', tags['artist'])
             .replace('%a', tags['album'])
             .replace('%t', tags['title']);
-        name = `${name}${type}`;
+        // name = `${name}${type}`;
 
         // idk wtf
         await new Promise((res, rej) => {setTimeout(_ => {res();}, 0);});
         progressBar.tick();
-        let newFilePath = path.resolve(dstDir, name);
+
+        let newFilePath = path.resolve(dstDir, `${name}${type}`);
+
+        while(fs.existsSync(newFilePath)) {
+
+            name += '_';
+            newFilePath = path.resolve(dstDir, `${name}${type}`);
+
+        }
+
         await spawn('cp', [file, newFilePath]);
 
     }
